@@ -23,8 +23,19 @@ export default function Navbar() {
           
           {/* Logo & Church Name */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="bg-churchGold p-2 rounded-full text-churchNavy">
-              <Church size={28} />
+            <div className="w-11 h-11 rounded-full overflow-hidden bg-churchGold flex items-center justify-center p-0.5 shadow-sm shrink-0">
+              <img 
+                src="/logo.png" 
+                alt="Athens Nepali Church Logo" 
+                className="w-full h-full object-cover rounded-full bg-white"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="hidden w-full h-full bg-churchGold text-churchNavy items-center justify-center">
+                <Church size={22} />
+              </div>
             </div>
             <div>
               <span className="text-xl font-bold tracking-wide">Athens Nepali Church</span>
