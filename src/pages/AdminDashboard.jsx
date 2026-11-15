@@ -423,6 +423,7 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
               <h3 className="text-lg font-bold text-churchNavy mb-4">Active Announcements</h3>
+              <p className="text-xs text-gray-500 mb-4">Note: If you post multiple announcements, the website banner will automatically display the latest active announcement.</p>
               <div className="space-y-3">
                 {announcements.map((an) => (
                   <div key={an.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
@@ -500,8 +501,8 @@ export default function AdminDashboard() {
                 {messages.map((ms) => (
                   <div key={ms.id} className="flex justify-between items-start p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <div>
-                      <p className="font-bold text-churchNavy">{ms.sender_name}</p>
-                      <p className="text-xs font-semibold text-gray-600">Contact: {ms.contact_info}</p>
+                      <p className="font-bold text-churchNavy">{ms.name} <span className="text-xs font-normal text-gray-500 ml-2">({ms.email})</span></p>
+                      {ms.phone && <p className="text-xs font-semibold text-gray-600">Phone: {ms.phone}</p>}
                       <p className="text-sm text-gray-700 mt-2 bg-white p-3 rounded-lg border border-gray-200">{ms.message}</p>
                       <p className="text-[10px] text-gray-400 mt-1">{new Date(ms.created_at).toLocaleString()}</p>
                     </div>

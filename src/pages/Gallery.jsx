@@ -14,8 +14,9 @@ export default function Gallery() {
   }, [])
 
   async function fetchGalleryPhotos() {
+    // Fetching from 'gallery_images' to match AdminDashboard
     const { data, error } = await supabase
-      .from('gallery_photos')
+      .from('gallery_images')
       .select('*')
       .order('created_at', { ascending: false })
 
@@ -38,7 +39,7 @@ export default function Gallery() {
       {/* Header / Hero Section with Background Video */}
       <section className="relative bg-churchNavy text-white py-28 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
         
-        {/* Background Video (object-contain प्रयोग गरिएको छ ताकि धेरै जुम नहोस्) */}
+        {/* Background Video */}
         <video 
           autoPlay 
           loop 
@@ -50,7 +51,7 @@ export default function Gallery() {
           Your browser does not support the video tag.
         </video>
 
-        {/* Dark Overlay (अलि हल्का बनाइएको छ ताकि अनुहार र भिडियो क्लियर देखिएओस्) */}
+        {/* Dark Overlay */}
         <div className="absolute inset-0 bg-churchNavy opacity-40"></div>
 
         {/* Content */}

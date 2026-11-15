@@ -5,6 +5,7 @@ import AnnouncementBar from './components/AnnouncementBar'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
+import PlanVisit from './pages/PlanVisit'
 import Home from './pages/Home'
 import About from './pages/About'
 import History from './pages/History'
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/prayer-wall" element={<PrayerWall />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/plan-visit" element={<PlanVisit/>} />
             </Routes>
           </main>
           <Footer />

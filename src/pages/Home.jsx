@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BookOpen, CalendarDays, Clock3, MapPin, Music4, PhoneCall, Users, Sparkles, MessageCircleHeart } from 'lucide-react'
+import { ArrowRight, BookOpen, CalendarDays, Clock3, MapPin, Music4, PhoneCall, Users, Sparkles, MessageCircleHeart, Video } from 'lucide-react'
 import { churchDetails, upcomingEvents, galleryImages } from '../data/churchContent'
 
 export default function Home() {
@@ -28,15 +28,15 @@ export default function Home() {
                   Growing Together in Faith, Worship, and God&apos;s Word
                 </h1>
                 <p className="mt-6 max-w-xl text-lg text-slate-200">
-                  A welcoming Nepali Christian family in the heart of Athens, Greece. Join us every Sunday as we lift up the name of Jesus together.
+                  A welcoming Nepali Christian family in the heart of Athens, Greece. Join us every Sunday in-person and every Monday &amp; Thursday online on Google Meet.
                 </p>
 
                 <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-                  <Link to="/worship" className="inline-flex items-center justify-center gap-2 rounded-xl bg-churchGold px-6 py-3.5 text-base font-bold text-churchNavy transition hover:bg-yellow-500">
-                    Join Our Worship <ArrowRight size={18} />
+                  <Link to="/plan-visit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-churchGold px-6 py-3.5 text-base font-bold text-churchNavy transition hover:bg-yellow-500">
+                    Plan Your Visit <ArrowRight size={18} />
                   </Link>
-                  <Link to="/about" className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition hover:border-churchGold hover:text-churchGold">
-                    Discover Our Church
+                  <Link to="/worship" className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition hover:border-churchGold hover:text-churchGold">
+                    Weekly Gatherings
                   </Link>
                 </div>
 
@@ -50,23 +50,31 @@ export default function Home() {
                     <p className="text-xs uppercase tracking-[0.12em] text-slate-300">church started</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                    <p className="text-2xl font-black text-white">Sunday</p>
-                    <p className="text-xs uppercase tracking-[0.12em] text-slate-300">worship</p>
+                    <p className="text-2xl font-black text-white">3 Days</p>
+                    <p className="text-xs uppercase tracking-[0.12em] text-slate-300">weekly fellowship</p>
                   </div>
                 </div>
               </div>
 
               <div className="rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-sm">
                 <div className="overflow-hidden rounded-[1.5rem] border border-white/10">
-                  <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80" alt="Church worship gathering" className="h-[420px] w-full object-cover" />
+                  <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80" alt="Church worship gathering" className="h-[340px] w-full object-cover" />
                 </div>
-                <div className="mt-4 rounded-2xl border border-churchGold/40 bg-churchGold/10 p-4 text-left">
-                  <div className="flex items-center justify-between gap-6">
+                <div className="mt-4 space-y-2.5 rounded-2xl border border-churchGold/40 bg-churchGold/10 p-4 text-left">
+                  <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-2.5">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-churchGold">Worship Service</p>
-                      <p className="mt-2 text-xl font-extrabold text-white">Every Sunday</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-churchGold">In-Person Worship</p>
+                      <p className="text-base font-extrabold text-white">Every Sunday</p>
                     </div>
-                    <div className="rounded-xl bg-churchGold px-3 py-2 text-center text-xs font-bold text-churchNavy">11:00 AM</div>
+                    <div className="rounded-xl bg-churchGold px-3 py-1.5 text-center text-xs font-bold text-churchNavy">11:00 AM – 1:00 PM</div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-slate-200 pt-0.5">
+                    <span>Mon: Online Fellowship (Google Meet)</span>
+                    <span className="font-bold text-churchGold">8:00 – 9:00 PM</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-slate-200">
+                    <span>Thu: Online Bible Study (Google Meet)</span>
+                    <span className="font-bold text-churchGold">7:30 – 9:00 PM</span>
                   </div>
                 </div>
               </div>
@@ -75,29 +83,42 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Weekly Gatherings Quick Info Bar */}
       <section className="border-y border-slate-200 bg-slate-50">
-        <div className="page-shell grid gap-6 px-4 py-8 sm:px-6 md:grid-cols-3 lg:px-8">
+        <div className="page-shell grid gap-5 px-4 py-8 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
           <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><Clock3 size={22} /></div>
+            <div className="rounded-xl bg-churchNavy p-3 text-churchGold shrink-0"><Clock3 size={22} /></div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Sunday Worship</p>
-              <p className="font-bold text-churchNavy">11:00 AM – 1:00 PM</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Sunday Worship</p>
+              <p className="font-bold text-churchNavy text-sm">11:00 AM – 1:00 PM</p>
+              <p className="text-[11px] text-slate-500">In-Person Gathering</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><MapPin size={22} /></div>
+            <div className="rounded-xl bg-churchNavy p-3 text-churchGold shrink-0"><Video size={22} /></div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Location</p>
-              <p className="font-bold text-churchNavy">{churchDetails.address}</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Monday Fellowship</p>
+              <p className="font-bold text-churchNavy text-sm">8:00 PM – 9:00 PM</p>
+              <p className="text-[11px] text-blue-600 font-medium">Google Meet Online</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><CalendarDays size={22} /></div>
+            <div className="rounded-xl bg-churchNavy p-3 text-churchGold shrink-0"><BookOpen size={22} /></div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Upcoming Events</p>
-              <Link to="/events" className="font-bold text-churchNavy hover:text-churchGold underline">View calendar</Link>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Thursday Bible Study</p>
+              <p className="font-bold text-churchNavy text-sm">7:30 PM – 9:00 PM</p>
+              <p className="text-[11px] text-blue-600 font-medium">Google Meet Online</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-xl bg-churchNavy p-3 text-churchGold shrink-0"><MapPin size={22} /></div>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Church Location</p>
+              <p className="font-bold text-churchNavy text-sm">{churchDetails.address}</p>
+              <Link to="/plan-visit" className="text-[11px] font-bold text-churchGold hover:underline">Join Us →</Link>
             </div>
           </div>
         </div>
