@@ -28,6 +28,7 @@ export default function AdminDashboard() {
   const [sermonForm, setSermonForm] = useState({ title: '', speaker: '', sermon_date: '', description: '', media_url: '' })
   const [galleryForm, setGalleryForm] = useState({ title: '', category: 'Worship', image_url: '' })
   const [announcementText, setAnnouncementText] = useState('')
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     checkUser()
@@ -93,22 +94,49 @@ export default function AdminDashboard() {
     fetchAllData()
   }
 
-  async function addGallery(e) {
+  async function addGalleryFile(e) {
     e.preventDefault()
-    if (!galleryForm.image_url) {
-      alert('Please enter an image URL.')
+    const fileInput = document.getElementById('churchPhotoInput')
+    const file = fileInput?.files[0]
+
+    if (!file) {
+      alert('Please select a photo from your device.')
       return
     }
 
-    await supabase.from('gallery_images').insert([{
-      title: galleryForm.title,
-      category: galleryForm.category,
-      image_url: galleryForm.image_url
-    }])
+    setUploading(true)
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random()}.${fileExt}`
+      const filePath = `${fileName}`
 
-    setGalleryForm({ title: '', category: 'Worship', image_url: '' })
-    fetchAllData()
-    alert('Photo published to gallery successfully!')
+      const { error: uploadError } = await supabase.storage
+        .from('church-gallery')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('church-gallery')
+        .getPublicUrl(filePath)
+
+      await supabase.from('gallery_images').insert([{
+        title: galleryForm.title,
+        category: galleryForm.category,
+        image_url: publicUrl
+      }])
+
+      setGalleryForm({ title: '', category: 'Worship', image_url: '' })
+      fileInput.value = ''
+      fetchAllData()
+      alert('Your church photo uploaded successfully!')
+    } catch (error) {
+      alert('Error uploading photo: ' + error.message)
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function addAnnouncement(e) {
@@ -319,11 +347,11 @@ export default function AdminDashboard() {
         {activeTab === 'gallery' && (
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-              <h3 className="text-lg font-bold text-churchNavy mb-4 flex items-center gap-2"><ImageIcon size={20} className="text-churchGold" /> Add Photo to Gallery</h3>
-              <form onSubmit={addGallery} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <h3 className="text-lg font-bold text-churchNavy mb-4 flex items-center gap-2"><ImageIcon size={20} className="text-churchGold" /> Upload Church Photo from Device</h3>
+              <form onSubmit={addGalleryFile} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <input 
                   type="text" 
-                  placeholder="Photo Title / Caption (e.g. Sunday Fellowship)" 
+                  placeholder="Photo Title (e.g. Sunday Service)" 
                   value={galleryForm.title} 
                   onChange={(e) => setGalleryForm({ ...galleryForm, title: e.target.value })} 
                   required 
@@ -340,18 +368,18 @@ export default function AdminDashboard() {
                   <option value="Celebrations">Celebrations</option>
                 </select>
                 <input 
-                  type="text" 
-                  placeholder="Image URL (e.g. Unsplash or direct link)" 
-                  value={galleryForm.image_url} 
-                  onChange={(e) => setGalleryForm({ ...galleryForm, image_url: e.target.value })} 
+                  id="churchPhotoInput"
+                  type="file" 
+                  accept="image/*"
                   required 
-                  className="px-4 py-2.5 rounded-xl border border-gray-300 text-sm" 
+                  className="px-3 py-2 rounded-xl border border-gray-300 text-sm file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-churchNavy file:text-churchGold hover:file:bg-opacity-90" 
                 />
                 <button 
                   type="submit" 
+                  disabled={uploading}
                   className="md:col-span-3 bg-churchNavy text-churchGold font-bold py-3 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-md hover:bg-opacity-95"
                 >
-                  <Plus size={18} /> Publish Photo to Gallery
+                  <Plus size={18} /> {uploading ? 'Uploading to Server...' : 'Upload & Publish Photo'}
                 </button>
               </form>
             </div>

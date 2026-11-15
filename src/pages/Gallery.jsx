@@ -1,118 +1,135 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../services/supabaseClient'
-import { Image as ImageIcon, Sparkles } from 'lucide-react'
+import { Image as ImageIcon, Sparkles, Calendar } from 'lucide-react'
 
 export default function Gallery() {
-  const [images, setImages] = useState([])
+  const [photos, setPhotos] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeFilter, setActiveFilter] = useState('All')
-
-  useEffect(() => {
-    fetchGalleryImages()
-  }, [])
-
-  async function fetchGalleryImages() {
-    if (!supabase) {
-      setImages([])
-      setLoading(false)
-      return
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('gallery_images')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setImages(data || [])
-    } catch (error) {
-      console.error('Error fetching gallery images:', error)
-      setImages([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
   const categories = ['All', 'Worship', 'Prayer', 'Fellowship', 'Celebrations']
 
-  const filteredImages = activeFilter === 'All' 
-    ? images 
-    : images.filter(img => img.category === activeFilter)
+  useEffect(() => {
+    fetchGalleryPhotos()
+  }, [])
+
+  async function fetchGalleryPhotos() {
+    const { data, error } = await supabase
+      .from('gallery_photos')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching gallery photos:', error)
+    } else {
+      setPhotos(data || [])
+    }
+    setLoading(false)
+  }
+
+  // Filter photos based on category
+  const filteredPhotos = selectedCategory === 'All' 
+    ? photos 
+    : photos.filter(p => p.category?.toLowerCase() === selectedCategory.toLowerCase())
 
   return (
-    <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8 animate-fadeIn">
-      <div className="max-w-7xl mx-auto">
+    <div className="bg-white text-gray-800 animate-fadeIn pb-20">
+      
+      {/* Header / Hero Section with Background Video */}
+      <section className="relative bg-churchNavy text-white py-28 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
         
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-1.5 text-churchGold font-semibold text-sm uppercase tracking-wider bg-churchNavy/5 px-4 py-1.5 rounded-full">
-            <Sparkles size={16} /> Photo & Media Gallery
-          </span>
-          <h1 className="text-4xl font-extrabold text-churchNavy mt-3 mb-4">Athens Nepali Church Moments</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Explore glimpses of our Sunday worship services, community fellowships, and joyous gatherings in Greece.
-          </p>
+        {/* Background Video (object-contain प्रयोग गरिएको छ ताकि धेरै जुम नहोस्) */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+        >
+          <source src="/worshipvideo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-2 mt-8">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveFilter(cat)}
-                className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${
-                  activeFilter === cat
-                    ? 'bg-churchNavy text-churchGold shadow-md scale-105'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+        {/* Dark Overlay (अलि हल्का बनाइएको छ ताकि अनुहार र भिडियो क्लियर देखिएओस्) */}
+        <div className="absolute inset-0 bg-churchNavy opacity-40"></div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 bg-churchGold/20 border border-churchGold/30 text-churchGold px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
+            <Sparkles size={14}/> Photo Gallery
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 drop-shadow-md">
+            Moments of Fellowship
+          </h1>
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto font-light drop-shadow">
+            Glimpses of our Sunday worship services, prayer meetings, and joyous community celebrations in Athens.
+          </p>
+        </div>
+      </section>
+
+      {/* Category Filter Tabs */}
+      <section className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-5 py-2 rounded-full text-xs font-bold transition-all shadow-sm cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-churchNavy text-churchGold shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Gallery Grid */}
         {loading ? (
-          <p className="text-center text-gray-500 py-20">Loading gallery photos...</p>
-        ) : filteredImages.length === 0 ? (
-          <div className="text-center bg-white p-12 rounded-2xl border border-gray-200 max-w-md mx-auto">
-            <ImageIcon className="mx-auto text-churchGold mb-3" size={48} />
-            <h3 className="text-lg font-bold text-churchNavy">No photos found</h3>
-            <p className="text-sm text-gray-500 mt-1">Upload photos via your Admin Dashboard under the Gallery tab.</p>
+          <div className="text-center py-16 text-gray-500">Loading gallery photos...</div>
+        ) : filteredPhotos.length === 0 ? (
+          <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100 max-w-xl mx-auto p-8">
+            <ImageIcon className="mx-auto text-gray-400 mb-3" size={48} />
+            <h3 className="text-xl font-bold text-churchNavy mb-1">No Photos Found</h3>
+            <p className="text-sm text-gray-500">No photos are available in this category yet. Check back soon or add from the Admin Dashboard.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredImages.map((img) => (
+            {filteredPhotos.map((photo) => (
               <div 
-                key={img.id} 
-                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 transform hover:-translate-y-1"
+                key={photo.id} 
+                className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
               >
-                <div className="relative overflow-hidden h-64 bg-gray-200">
+                <div className="relative h-64 overflow-hidden bg-gray-100">
                   <img 
-                    src={img.image_url} 
-                    alt={img.title || 'Church Photo'} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1543165365-0723ac8638c8?auto=format&fit=crop&q=80&w=800';
-                    }}
+                    src={photo.image_url} 
+                    alt={photo.title || 'Church Fellowship'} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <span className="bg-churchGold text-churchNavy text-xs font-bold px-3 py-1 rounded-full">
-                      {img.category}
-                    </span>
-                  </div>
+                  <span className="absolute top-3 right-3 bg-churchNavy/80 backdrop-blur-md text-churchGold text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    {photo.category || 'Fellowship'}
+                  </span>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-churchNavy text-base">{img.title || 'Sunday Fellowship'}</h3>
-                  <p className="text-xs text-gray-400 mt-1">{new Date(img.created_at).toLocaleDateString()}</p>
+                
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-lg font-bold text-churchNavy mb-1 group-hover:text-churchGold transition-colors">
+                    {photo.title}
+                  </h3>
+                  {photo.description && (
+                    <p className="text-gray-600 text-sm mb-4 flex-grow">{photo.description}</p>
+                  )}
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100">
+                    <Calendar size={13} /> {new Date(photo.created_at).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
+      </section>
 
-      </div>
     </div>
   )
 }

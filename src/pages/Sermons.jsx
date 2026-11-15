@@ -1,98 +1,82 @@
-import React, { useEffect, useState } from 'react'
-import { BookOpen, CalendarDays, UserRound, Video } from 'lucide-react'
-import { supabase, isSupabaseConfigured } from '../services/supabaseClient'
-
-function getEmbedUrl(url) {
-  if (!url) return null
-  if (url.includes('embed')) return url
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([A-Za-z0-9_-]{11})/)
-  return match ? `https://www.youtube.com/embed/${match[1]}` : null
-}
+import React, { useState, useEffect } from 'react'
+import { supabase } from '../services/supabaseClient'
+import { BookOpen, Video, User, Calendar, Sparkles } from 'lucide-react'
 
 export default function Sermons() {
   const [sermons, setSermons] = useState([])
-  const [loading, setLoading] = useState(Boolean(isSupabaseConfigured))
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!isSupabaseConfigured || !supabase) {
-      setLoading(false)
-      return
-    }
-
-    async function fetchSermons() {
-      try {
-        const { data, error } = await supabase.from('sermons').select('*').order('sermon_date', { ascending: false })
-        if (error) throw error
-        setSermons(data || [])
-      } catch (error) {
-        console.error('Error fetching sermons:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchSermons()
   }, [])
 
+  async function fetchSermons() {
+    const { data } = await supabase
+      .from('sermons')
+      .select('*')
+      .order('sermon_date', { ascending: false })
+    setSermons(data || [])
+    setLoading(false)
+  }
+
   return (
-    <div className="bg-slate-50 py-20 px-4 sm:px-6 lg:px-8">
-      <div className="page-shell">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">Spiritual nourishment</p>
-          <h1 className="mt-3 text-4xl font-extrabold text-churchNavy sm:text-5xl">Sermons & Messages</h1>
-          <p className="mt-5 text-lg leading-8 text-slate-600">
-            Listen to the Word of God and grow in faith through biblical teaching from our worship gatherings.
+    <div className="bg-white text-gray-800 animate-fadeIn pb-20">
+      
+      {/* Header */}
+      <section className="relative bg-churchNavy text-white py-20 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&q=80&w=2000')` }}></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 bg-churchGold/20 border border-churchGold/30 text-churchGold px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+            <Sparkles size="{14}"/> Biblical Teachings
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">Sermon Repository</h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-light">
+            Listen to life-changing messages and biblical teachings from our Sunday worship services.
           </p>
         </div>
+      </section>
 
+      {/* Sermons Grid */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {loading ? (
-          <div className="mt-12 text-center text-slate-500">Loading sermons...</div>
+          <div className="text-center py-12 text-gray-500">Loading sermons...</div>
         ) : sermons.length === 0 ? (
-          <div className="mt-12 rounded-[2rem] border border-slate-200 bg-white p-12 text-center shadow-sm">
-            <BookOpen className="mx-auto text-churchGold" size={52} />
-            <h3 className="mt-5 text-2xl font-bold text-churchNavy">No sermons are available yet</h3>
-            <p className="mt-3 text-slate-600">New sermon messages will appear here when they are added through the admin dashboard.</p>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 max-w-xl mx-auto">
+            <BookOpen className="mx-auto text-gray-400 mb-3" size="{48}"/>
+            <h3 className="text-xl font-bold text-churchNavy mb-1">No Sermons Available</h3>
+            <p className="text-sm text-gray-500">Sermons will appear here once added from the Admin Dashboard.</p>
           </div>
         ) : (
-          <div className="mt-16 space-y-8">
-            {sermons.map((sermon) => {
-              const embedUrl = getEmbedUrl(sermon.media_url)
-              return (
-                <div key={sermon.id} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm lg:grid lg:grid-cols-2">
-                  <div className="min-h-[280px] bg-churchNavy">
-                    {embedUrl ? (
-                      <iframe src={embedUrl} title={sermon.title} className="h-full w-full" allowFullScreen />
-                    ) : (
-                      <div className="flex h-full min-h-[280px] flex-col items-center justify-center text-center text-slate-300">
-                        <Video size={52} className="mb-4 text-churchGold" />
-                        <p className="text-lg font-semibold">Audio / Message</p>
-                      </div>
-                    )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sermons.map((sm) => (
+              <div key={sm.id} className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex items-center gap-2 text-xs font-bold text-churchGold bg-churchNavy/5 px-3 py-1 rounded-full w-max mb-3">
+                    <Calendar size="{13}"/> {sm.sermon_date}
                   </div>
-
-                  <div className="p-8">
-                    <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                      <span className="inline-flex items-center gap-2 font-semibold text-churchNavy">
-                        <UserRound size={16} className="text-churchGold" /> {sermon.speaker}
-                      </span>
-                      <span className="inline-flex items-center gap-2">
-                        <CalendarDays size={16} className="text-churchGold" /> {sermon.sermon_date}
-                      </span>
-                    </div>
-
-                    <h2 className="text-3xl font-bold text-churchNavy">{sermon.title}</h2>
-                    <p className="mt-4 text-base leading-7 text-slate-600">{sermon.description}</p>
-
-                    {sermon.media_url && !embedUrl && (
-                      <a href={sermon.media_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-xl bg-churchNavy px-5 py-3 text-sm font-bold text-churchGold">Open media</a>
-                    )}
-                  </div>
+                  <h3 className="text-xl font-bold text-churchNavy mb-2">{sm.title}</h3>
+                  <p className="text-xs font-semibold text-gray-500 flex items-center gap-1.5 mb-4">
+                    <User className="text-churchGold" size="{14}"/> Speaker: {sm.speaker}
+                  </p>
+                  <p className="text-gray-600 text-sm mb-6 flex-grow">{sm.description}</p>
+                  
+                  {sm.media_url && (
+                    <a 
+                      href={sm.media_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="mt-auto w-full bg-churchNavy text-churchGold font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs hover:bg-opacity-90 transition-colors shadow-sm"
+                    >
+                      <Video size="{15}"/> Watch Sermon / Video
+                    </a>
+                  )}
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         )}
-      </div>
+      </section>
+
     </div>
   )
 }
