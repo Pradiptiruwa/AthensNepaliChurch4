@@ -1,88 +1,77 @@
 import React from 'react'
-import { Clock, MapPin, Music, BookOpen, Coffee } from 'lucide-react'
-import { useLanguage } from '../services/LanguageContext'
+import { BookOpen, Clock3, Coffee, Music4, MapPin } from 'lucide-react'
+
+const experience = [
+  { icon: Music4, title: 'Praise & Worship', text: 'Heartfelt worship through prayer, songs, and a joyful atmosphere of praise to God.' },
+  { icon: BookOpen, title: 'The Word of God', text: 'Biblical teaching centered on truth, guidance, and practical spiritual growth for everyday life.' },
+  { icon: Coffee, title: 'Fellowship & Tea', text: 'Warm fellowship after the service, where believers connect, share life, and pray together.' },
+]
 
 export default function Worship() {
-  const { t } = useLanguage()
-
   return (
-    <div className="bg-white py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        
-        {/* Header */}
-        <div className="text-center mb-16">
-          <span className="text-churchGold font-semibold text-sm uppercase tracking-wider">{t('worshipSubtitle')}</span>
-          <h1 className="text-4xl font-extrabold text-churchNavy mt-2 mb-4">{t('worshipTitle')}</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            {t('worshipDesc')}
+    <div className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">Join us this Sunday</p>
+          <h1 className="mt-3 text-4xl font-extrabold text-churchNavy sm:text-5xl">Worship Service</h1>
+          <p className="mt-5 text-lg leading-8 text-slate-600">
+            Every Sunday, we gather to worship Jesus Christ, hear His Word, and enjoy the warmth of Christian fellowship.
           </p>
         </div>
 
-        {/* Time & Location Card */}
-        <div className="bg-churchNavy text-white rounded-2xl p-8 md:p-12 mb-16 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <span className="bg-churchGold/20 text-churchGold px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">{t('weeklyGathering')}</span>
-            <h2 className="text-3xl font-bold mt-3 mb-2">{t('weeklyTitle')}</h2>
-            <p className="text-gray-300 text-sm max-w-md">
-              {t('weeklyDesc')}
-            </p>
-          </div>
-          <div className="space-y-4 shrink-0 w-full md:w-auto">
-            <div className="flex items-center space-x-3 bg-white/10 px-5 py-3 rounded-xl">
-              <Clock className="text-churchGold" size={22} />
-              <div>
-                <p className="text-xs text-gray-300">{t('timeLabel')}</p>
-                <p className="font-bold">11:00 AM – 1:00 PM</p>
+        <div className="mt-16 overflow-hidden rounded-[2rem] bg-churchNavy text-white shadow-xl">
+          <div className="grid gap-8 p-8 sm:p-10 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">Weekly Gathering</p>
+              <h2 className="mt-3 text-3xl font-extrabold text-white">Sunday Worship Service</h2>
+              <p className="mt-4 max-w-lg text-slate-200">
+                We gather every week with joyful praise, heartfelt prayer, biblical teaching, and a spirit of unity and care.
+              </p>
+            </div>
+
+            <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-churchGold p-2 text-churchNavy"><Clock3 size={20} /></div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-300">Time</p>
+                  <p className="mt-1 font-bold">11:00 AM – 1:00 PM</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-churchGold p-2 text-churchNavy"><MapPin size={20} /></div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-300">Location</p>
+                  <p className="mt-1 font-bold">Patision 11, Athens, Greece</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3 bg-white/10 px-5 py-3 rounded-xl">
-              <MapPin className="text-churchGold" size={22} />
-              <div>
-                <p className="text-xs text-gray-300">{t('location')}</p>
-                <p className="font-bold">Patision 11, Athens, Greece</p>
+          </div>
+        </div>
+
+        <div className="mt-18">
+          <div className="mb-10 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">What to expect</p>
+            <h2 className="mt-3 text-3xl font-extrabold text-churchNavy">A warm, biblical, and encouraging worship experience</h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {experience.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="rounded-[2rem] border border-slate-200 bg-slate-50 p-7 shadow-sm">
+                <div className="mb-5 inline-flex rounded-2xl bg-churchNavy p-3 text-churchGold"><Icon size={24} /></div>
+                <h3 className="mb-3 text-xl font-bold text-churchNavy">{title}</h3>
+                <p className="text-base leading-7 text-slate-600">{text}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* What to Expect */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-churchNavy">{t('expectTitle')}</h2>
-          <p className="text-gray-600 mt-2">{t('expectDesc')}</p>
+        <div className="mt-16 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
+          <h3 className="text-2xl font-bold text-churchNavy">Welcome to all visitors</h3>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            Whether you are visiting Athens, new to the city, or seeking a church family, you are warmly welcome at Athens Nepali Church. We would love to meet you, pray with you, and help you find a place of belonging in Christ.
+          </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-            <div className="w-12 h-12 bg-churchNavy text-churchGold rounded-lg flex items-center justify-center mb-4">
-              <Music size={22} />
-            </div>
-            <h3 className="text-lg font-bold text-churchNavy mb-2">{t('praiseTitle')}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {t('praiseDesc')}
-            </p>
-          </div>
-
-          <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-            <div className="w-12 h-12 bg-churchNavy text-churchGold rounded-lg flex items-center justify-center md:h-12">
-              <BookOpen size={22} />
-            </div>
-            <h3 className="text-lg font-bold text-churchNavy mb-2">{t('wordTitle')}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {t('wordDesc')}
-            </p>
-          </div>
-
-          <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-            <div className="w-12 h-12 bg-churchNavy text-churchGold rounded-lg flex items-center justify-center mb-4">
-              <Coffee size={22} />
-            </div>
-            <h3 className="text-lg font-bold text-churchNavy mb-2">{t('fellowshipTitle')}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {t('fellowshipDesc')}
-            </p>
-          </div>
-        </div>
-
       </div>
     </div>
   )

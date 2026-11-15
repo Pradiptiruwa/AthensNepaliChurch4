@@ -1,115 +1,97 @@
-import React, { useState, useEffect } from 'react'
-import { supabase } from '../services/supabaseClient'
-import { BookOpen, Video, User, Calendar } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { BookOpen, CalendarDays, UserRound, Video } from 'lucide-react'
+import { supabase, isSupabaseConfigured } from '../services/supabaseClient'
+
+function getEmbedUrl(url) {
+  if (!url) return null
+  if (url.includes('embed')) return url
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([A-Za-z0-9_-]{11})/)
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null
+}
 
 export default function Sermons() {
   const [sermons, setSermons] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(isSupabaseConfigured))
 
   useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setLoading(false)
+      return
+    }
+
+    async function fetchSermons() {
+      try {
+        const { data, error } = await supabase.from('sermons').select('*').order('sermon_date', { ascending: false })
+        if (error) throw error
+        setSermons(data || [])
+      } catch (error) {
+        console.error('Error fetching sermons:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchSermons()
   }, [])
 
-  async function fetchSermons() {
-    const { data } = await supabase
-      .from('sermons')
-      .select('*')
-      .order('sermon_date', { ascending: false })
-
-    setSermons(data || [])
-    setLoading(false)
-  }
-
-  // Helper to convert standard YouTube links to embed format
-  function getEmbedUrl(url) {
-    if (!url) return null
-    if (url.includes('embed')) return url
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-    const match = url.match(regExp)
-    return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null
-  }
-
   return (
-    <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8 animate-fadeIn">
-      <div className="max-w-6xl mx-auto">
-        
-        <div className="text-center mb-16">
-          <span className="text-churchGold font-semibold text-sm uppercase tracking-wider bg-churchNavy/5 px-4 py-1.5 rounded-full">
-            Spiritual Nourishment
-          </span>
-          <h1 className="text-4xl font-extrabold text-churchNavy mt-3 mb-4">Sermons & Messages</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Listen or watch life-changing biblical messages from our Sunday worship gatherings.
+    <div className="bg-slate-50 py-20 px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">Spiritual nourishment</p>
+          <h1 className="mt-3 text-4xl font-extrabold text-churchNavy sm:text-5xl">Sermons & Messages</h1>
+          <p className="mt-5 text-lg leading-8 text-slate-600">
+            Listen to the Word of God and grow in faith through biblical teaching from our worship gatherings.
           </p>
         </div>
 
         {loading ? (
-          <p className="text-center text-gray-500 py-20">Loading sermons...</p>
+          <div className="mt-12 text-center text-slate-500">Loading sermons...</div>
         ) : sermons.length === 0 ? (
-          <div className="text-center bg-white p-12 rounded-2xl border border-gray-200 max-w-md mx-auto">
-            <BookOpen className="mx-auto text-churchGold mb-3" size={48} />
-            <h3 className="text-lg font-bold text-churchNavy">No sermons posted yet</h3>
-            <p className="text-sm text-gray-500 mt-1">Add sermons with YouTube links via your Admin Dashboard.</p>
+          <div className="mt-12 rounded-[2rem] border border-slate-200 bg-white p-12 text-center shadow-sm">
+            <BookOpen className="mx-auto text-churchGold" size={52} />
+            <h3 className="mt-5 text-2xl font-bold text-churchNavy">No sermons are available yet</h3>
+            <p className="mt-3 text-slate-600">New sermon messages will appear here when they are added through the admin dashboard.</p>
           </div>
         ) : (
-          <div className="space-y-10">
+          <div className="mt-16 space-y-8">
             {sermons.map((sermon) => {
               const embedUrl = getEmbedUrl(sermon.media_url)
               return (
-                <div key={sermon.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
-                  
-                  {/* Video Embed or Placeholder */}
-                  <div className="bg-churchNavy min-h-[280px] flex items-center justify-center relative">
+                <div key={sermon.id} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm lg:grid lg:grid-cols-2">
+                  <div className="min-h-[280px] bg-churchNavy">
                     {embedUrl ? (
-                      <iframe
-                        src={embedUrl}
-                        title={sermon.title}
-                        className="w-full h-full absolute inset-0"
-                        allowFullScreen
-                      ></iframe>
+                      <iframe src={embedUrl} title={sermon.title} className="h-full w-full" allowFullScreen />
                     ) : (
-                      <div className="text-center p-6 text-gray-400">
-                        <Video size={48} className="mx-auto text-churchGold mb-2" />
-                        <p className="text-sm font-medium">Audio / Text Message</p>
+                      <div className="flex h-full min-h-[280px] flex-col items-center justify-center text-center text-slate-300">
+                        <Video size={52} className="mb-4 text-churchGold" />
+                        <p className="text-lg font-semibold">Audio / Message</p>
                       </div>
                     )}
                   </div>
 
-                  {/* Sermon Details */}
-                  <div className="p-8 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-                        <span className="flex items-center gap-1 font-semibold text-churchNavy">
-                          <User size={14} className="text-churchGold" /> {sermon.speaker}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar size={14} /> {sermon.sermon_date}
-                        </span>
-                      </div>
-                      <h2 className="text-2xl font-bold text-churchNavy mb-3">{sermon.title}</h2>
-                      <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                        {sermon.description || 'Join us as we explore the truths of God\'s Word and apply them to our daily lives in Greece.'}
-                      </p>
+                  <div className="p-8">
+                    <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                      <span className="inline-flex items-center gap-2 font-semibold text-churchNavy">
+                        <UserRound size={16} className="text-churchGold" /> {sermon.speaker}
+                      </span>
+                      <span className="inline-flex items-center gap-2">
+                        <CalendarDays size={16} className="text-churchGold" /> {sermon.sermon_date}
+                      </span>
                     </div>
 
+                    <h2 className="text-3xl font-bold text-churchNavy">{sermon.title}</h2>
+                    <p className="mt-4 text-base leading-7 text-slate-600">{sermon.description}</p>
+
                     {sermon.media_url && !embedUrl && (
-                      <a
-                        href={sermon.media_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center justify-center gap-2 bg-churchNavy text-churchGold px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-opacity-90 w-fit"
-                      >
-                        Listen / Open Recording
-                      </a>
+                      <a href={sermon.media_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-xl bg-churchNavy px-5 py-3 text-sm font-bold text-churchGold">Open media</a>
                     )}
                   </div>
-
                 </div>
               )
             })}
           </div>
         )}
-
       </div>
     </div>
   )

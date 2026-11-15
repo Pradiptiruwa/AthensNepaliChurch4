@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { supabase } from '../services/supabaseClient'
+import { supabase, isSupabaseConfigured } from '../services/supabaseClient'
 import { HeartHandshake, Send, CheckCircle2 } from 'lucide-react'
 
 export default function PrayerWall() {
   const [prayers, setPrayers] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(isSupabaseConfigured))
   const [name, setName] = useState('')
   const [requestText, setRequestText] = useState('')
   const [submitted, setSubmitted] = useState(false)
@@ -15,18 +15,39 @@ export default function PrayerWall() {
   }, [])
 
   async function fetchApprovedPrayers() {
-    const { data } = await supabase
-      .from('prayer_requests')
-      .select('*')
-      .eq('is_approved', true)
-      .order('created_at', { ascending: false })
+    if (!isSupabaseConfigured || !supabase) {
+      setPrayers([])
+      setLoading(false)
+      return
+    }
 
-    setPrayers(data || [])
-    setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('prayer_requests')
+        .select('*')
+        .eq('is_approved', true)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setPrayers(data || [])
+    } catch (error) {
+      console.error('Error fetching prayer requests:', error)
+      setPrayers([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
+
+    if (!isSupabaseConfigured || !supabase) {
+      setName('')
+      setRequestText('')
+      setSubmitted(true)
+      return
+    }
+
     await supabase.from('prayer_requests').insert([
       { author_name: name || 'Anonymous', request_text: requestText, is_approved: false }
     ])
@@ -36,7 +57,7 @@ export default function PrayerWall() {
   }
 
   async function handlePrayClick(prayer) {
-    if (prayedIds.includes(prayer.id)) return
+    if (prayedIds.includes(prayer.id) || !isSupabaseConfigured || !supabase) return
 
     const newCount = (prayer.pray_count || 0) + 1
     setPrayedIds([...prayedIds, prayer.id])
@@ -67,7 +88,7 @@ export default function PrayerWall() {
             <h2 className="text-xl font-bold text-churchNavy mb-4">Submit a Prayer Request</h2>
             {submitted ? (
               <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-xl text-sm">
-                <p className="font-bold flex items-center gap-1.5 mb-1"><CheckCircle2 size="{16}"/> Request Received</p>
+                <p className="font-bold flex items-center gap-1.5 mb-1"><CheckCircle2 size={16} /> Request Received</p>
                 <p>Our elders will review your request shortly before posting it publicly.</p>
                 <button
                   onClick={() => setSubmitted(false)}
@@ -103,7 +124,7 @@ export default function PrayerWall() {
                   type="submit"
                   className="w-full bg-churchNavy text-churchGold font-bold py-3 rounded-lg hover:bg-opacity-90 flex items-center justify-center gap-2 text-sm"
                 >
-                  <Send size="{16}"/> Share Request
+                  <Send size={16} /> Share Request
                 </button>
               </form>
             )}
@@ -115,7 +136,7 @@ export default function PrayerWall() {
               <p className="text-gray-500 text-center py-8">Loading prayer requests...</p>
             ) : prayers.length === 0 ? (
               <div className="bg-gray-50 p-10 rounded-2xl text-center border border-gray-100">
-                <HeartHandshake className="mx-auto text-churchGold mb-3" size="{40}"/>
+                <HeartHandshake className="mx-auto text-churchGold mb-3" size={40} />
                 <p className="font-bold text-churchNavy">No public prayer requests yet.</p>
                 <p className="text-sm text-gray-500 mt-1">Be the first to share a request with the congregation.</p>
               </div>
@@ -140,7 +161,7 @@ export default function PrayerWall() {
                           : 'bg-churchNavy text-churchGold hover:bg-opacity-90'
                       }`}
                     >
-                      <HeartHandshake size="{14}"/>
+                      <HeartHandshake size={14} />
                       {hasPrayed ? 'Prayed' : 'I Prayed'} ({prayer.pray_count || 0})
                     </button>
                   </div>

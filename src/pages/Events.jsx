@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { Calendar, MapPin, Clock } from 'lucide-react'
-import { supabase } from '../services/supabaseClient'
+import { supabase, isSupabaseConfigured } from '../services/supabaseClient'
 
 export default function Events() {
   const [events, setEvents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(isSupabaseConfigured))
 
   useEffect(() => {
     fetchEvents()
   }, [])
 
   async function fetchEvents() {
+    if (!isSupabaseConfigured || !supabase) {
+      setEvents([])
+      setLoading(false)
+      return
+    }
+
     try {
       const { data, error } = await supabase
         .from('events')
         .select('*')
         .order('event_date', { ascending: true })
-      
+
       if (error) throw error
       setEvents(data || [])
     } catch (err) {
-      console.error('Error fetching events:', err.message)
+      console.error('Error fetching events:', err?.message || err)
+      setEvents([])
     } finally {
       setLoading(false)
     }

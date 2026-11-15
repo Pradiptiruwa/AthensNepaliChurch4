@@ -12,13 +12,26 @@ export default function Gallery() {
   }, [])
 
   async function fetchGalleryImages() {
-    const { data } = await supabase
-      .from('gallery_images')
-      .select('*')
-      .order('created_at', { ascending: false })
+    if (!supabase) {
+      setImages([])
+      setLoading(false)
+      return
+    }
 
-    setImages(data || [])
-    setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      setImages(data || [])
+    } catch (error) {
+      console.error('Error fetching gallery images:', error)
+      setImages([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   const categories = ['All', 'Worship', 'Prayer', 'Fellowship', 'Celebrations']

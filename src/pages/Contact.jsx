@@ -1,153 +1,107 @@
 import React, { useState } from 'react'
-import { supabase } from '../services/supabaseClient'
-import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Clock3, MapPin, PhoneCall, Send, Music2 } from 'lucide-react'
+import { churchDetails } from '../data/churchContent'
 
 export default function Contact() {
   const [formData, setFormData] = useState({ sender_name: '', contact_info: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setSubmitting(true)
-    await supabase.from('contact_messages').insert([formData])
-    setSubmitting(false)
+  const handleSubmit = (event) => {
+    event.preventDefault()
     setSubmitted(true)
+    setFormData({ sender_name: '', contact_info: '', message: '' })
   }
 
   return (
-    <div className="bg-white py-16 px-4 sm:px-6 lg:px-8 animate-fadeIn">
-      <div className="max-w-7xl mx-auto">
-        
-        <div className="text-center mb-16">
-          <span className="text-churchGold font-bold text-xs uppercase tracking-[0.2em]">Get in Touch</span>
-          <h1 className="text-4xl font-extrabold text-churchNavy mt-2 mb-4">Contact Us & Directions</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            We would love to hear from you. Reach out with questions, prayer needs, or visit us this Sunday in the heart of Athens.
+    <div className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+      <div className="page-shell">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-churchGold">Get in touch</p>
+          <h1 className="mt-3 text-4xl font-extrabold text-churchNavy sm:text-5xl">Contact us &amp; directions</h1>
+          <p className="mt-5 text-lg leading-8 text-slate-600">
+            We would love to hear from you. Reach out with questions, prayer requests, or plan a visit this Sunday.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          
-          {/* Contact Info */}
-          <div className="space-y-8">
-            <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm">
-              <h3 className="text-2xl font-bold text-churchNavy mb-6">Church Information</h3>
-              <ul className="space-y-6 text-gray-600">
-                <li className="flex items-start space-x-4">
-                  <div className="bg-churchNavy text-churchGold p-3.5 rounded-xl shrink-0 shadow-sm">
-                    <MapPin size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-churchNavy">Address</p>
-                    <p className="text-sm">Patision 11, Athens 104 31, Greece</p>
-                  </div>
-                </li>
+        <div className="mt-16 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8 shadow-sm">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><MapPin size={22} /></div>
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">Address</p>
+                  <p className="mt-2 text-lg font-bold text-churchNavy">{churchDetails.address}</p>
+                </div>
+              </div>
 
-                <li className="flex items-start space-x-4">
-                  <div className="bg-churchNavy text-churchGold p-3.5 rounded-xl shrink-0 shadow-sm">
-                    <Clock size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-churchNavy">Worship Time</p>
-                    <p className="text-sm">Sunday: 11:00 AM – 1:00 PM</p>
-                  </div>
-                </li>
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><Clock3 size={22} /></div>
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">Worship Schedule</p>
+                  <p className="mt-2 text-lg font-bold text-churchNavy">Every Sunday</p>
+                  <p className="text-slate-600">11:00 AM – 1:00 PM</p>
+                </div>
+              </div>
 
-                <li className="flex items-start space-x-4">
-                  <div className="bg-churchNavy text-churchGold p-3.5 rounded-xl shrink-0 shadow-sm">
-                    <Phone size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-churchNavy">Leadership Contacts</p>
-                    <p className="text-sm font-medium">Sagar Sunar (Elder): <a href="tel:+306949651076" className="text-churchNavy underline hover:text-churchGold">+30 694 965 1076</a></p>
-                    <p className="text-sm font-medium mt-1">Joseph Tiruwa (Elder): <a href="tel:+306972366505" className="text-churchNavy underline hover:text-churchGold">+30 697 236 6505</a></p>
-                  </div>
-                </li>
-              </ul>
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><PhoneCall size={22} /></div>
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">Leadership Contacts</p>
+                  {churchDetails.contacts.map((person) => (
+                    <a key={person.phone} href={person.tel} className="mt-2 block text-base font-medium text-slate-700 hover:text-churchNavy">
+                      {person.name} • {person.phone}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="rounded-xl bg-churchNavy p-3 text-churchGold"><Music2 size={22} /></div>
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">TikTok</p>
+                  <a href={churchDetails.tiktokUrl} target="_blank" rel="noreferrer" className="mt-2 block text-base font-medium text-slate-700 hover:text-churchNavy">
+                    @athens.nepali.chu
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm">
-            <h3 className="text-2xl font-bold text-churchNavy mb-6">Send Us a Message</h3>
-            {submitted ? (
-              <div className="bg-green-50 border border-green-200 text-green-900 p-8 rounded-2xl text-center">
-                <CheckCircle2 className="mx-auto text-green-600 mb-3" size={44} />
-                <h4 className="font-bold text-xl mb-1">Thank You!</h4>
-                <p className="text-sm text-green-800">Your message has been saved and sent to our church leadership team.</p>
-                <button 
-                  onClick={() => {
-                    setSubmitted(false)
-                    setFormData({ sender_name: '', contact_info: '', message: '' })
-                  }}
-                  className="mt-4 text-xs font-bold underline text-churchNavy"
-                >
-                  Send another message
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            {!submitted ? (
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Your Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.sender_name}
-                    onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-churchNavy text-sm"
-                    placeholder="Full Name"
-                  />
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-[0.12em] text-slate-600">Your Name</label>
+                  <input type="text" required value={formData.sender_name} onChange={(event) => setFormData((current) => ({ ...current, sender_name: event.target.value }))} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none ring-0 transition focus:border-churchNavy" placeholder="Full name" />
                 </div>
+
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Phone, WhatsApp, or Email</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.contact_info}
-                    onChange={(e) => setFormData({ ...formData, contact_info: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-churchNavy text-sm"
-                    placeholder="+30 69... or email@example.com"
-                  />
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-[0.12em] text-slate-600">Phone or Email</label>
+                  <input type="text" required value={formData.contact_info} onChange={(event) => setFormData((current) => ({ ...current, contact_info: event.target.value }))} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none ring-0 transition focus:border-churchNavy" placeholder="+30 694... or email@example.com" />
                 </div>
+
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Message</label>
-                  <textarea
-                    rows={4}
-                    required
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-churchNavy text-sm"
-                    placeholder="How can we help or pray for you?"
-                  ></textarea>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-[0.12em] text-slate-600">Message</label>
+                  <textarea rows={5} required value={formData.message} onChange={(event) => setFormData((current) => ({ ...current, message: event.target.value }))} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-churchNavy" placeholder="How can we help or pray for you?" />
                 </div>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-churchNavy text-churchGold font-bold py-3.5 rounded-xl hover:bg-opacity-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Send size={18} /> {submitting ? 'Sending...' : 'Send Message'}
+
+                <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-churchNavy px-5 py-3.5 text-base font-bold text-churchGold transition hover:bg-slate-900">
+                  <Send size={18} /> Send Message
                 </button>
               </form>
+            ) : (
+              <div className="flex min-h-[380px] flex-col items-center justify-center rounded-[1.5rem] bg-emerald-50 p-8 text-center">
+                <CheckCircle2 className="text-emerald-600" size={56} />
+                <h3 className="mt-4 text-2xl font-bold text-churchNavy">Thank You!</h3>
+                <p className="mt-3 max-w-sm text-base text-slate-600">Your message has been received. Our church leadership will contact you soon.</p>
+              </div>
             )}
           </div>
-
         </div>
 
-        {/* Interactive Google Map */}
-        <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 h-96">
-          <iframe
-            title="Athens Nepali Church Map"
-            src="https://www.google.com/maps?q=Patision+11,+Athens,+Greece&output=embed"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <div className="mt-16 overflow-hidden rounded-[2rem] border border-slate-200 shadow-lg">
+          <iframe title="Athens Nepali Church Map" src="https://www.google.com/maps?q=Patision+11,+Athens,+Greece&output=embed" width="100%" height="420" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
         </div>
-
       </div>
     </div>
   )
