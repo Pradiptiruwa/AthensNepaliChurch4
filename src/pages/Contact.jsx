@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react'
+import { MapPin, Phone, Clock, Send } from 'lucide-react'
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
@@ -15,13 +15,13 @@ export default function Contact() {
         
         <div className="text-center mb-16">
           <span className="text-churchGold font-semibold text-sm uppercase tracking-wider">Get in Touch</span>
-          <h1 className="text-4xl font-extrabold text-churchNavy mt-2 mb-4">Contact Us & Prayer Requests</h1>
+          <h1 className="text-4xl font-extrabold text-churchNavy mt-2 mb-4">Contact Us & Directions</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            We would love to hear from you. Reach out with questions or share your prayer requests with our leadership team.
+            We would love to hear from you. Reach out with questions or visit us this Sunday in the heart of Athens.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           
           {/* Contact Info */}
           <div className="space-y-8">
@@ -34,7 +34,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="font-bold text-churchNavy">Address</p>
-                    <p className="text-sm">Patision 11, Athens, Greece</p>
+                    <p className="text-sm">Patision 11, Athens 104 31, Greece</p>
                   </div>
                 </li>
 
@@ -62,13 +62,13 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Contact / Prayer Request Form */}
+          {/* Contact Form */}
           <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
             <h3 className="text-2xl font-bold text-churchNavy mb-6">Send Us a Message</h3>
             {submitted ? (
               <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-xl text-center">
                 <h4 className="font-bold text-lg mb-1">Thank You!</h4>
-                <p className="text-sm">Your message or prayer request has been received. Our leadership team will be praying for you.</p>
+                <p className="text-sm">Your message has been received. Our leadership team will contact you soon.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -91,12 +91,12 @@ export default function Contact() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Message / Prayer Request</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Message</label>
                   <textarea
                     rows={4}
                     required
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-churchNavy text-sm"
-                    placeholder="How can we pray for you or help you?"
+                    placeholder="How can we help you?"
                   ></textarea>
                 </div>
                 <button
@@ -109,6 +109,20 @@ export default function Contact() {
             )}
           </div>
 
+        </div>
+
+        {/* Interactive Google Map */}
+        <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200 h-96">
+          <iframe
+            title="Athens Nepali Church Map"
+            src="https://www.google.com/maps?q=Patision+11,+Athens,+Greece&output=embed"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
 
       </div>
