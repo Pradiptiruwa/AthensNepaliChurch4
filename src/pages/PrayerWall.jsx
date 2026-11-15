@@ -103,13 +103,13 @@ export default function PrayerWall() {
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm" 
                 />
               </div>
-              <button 
-                type="submit" 
-                disabled={submitting} 
-                className="w-full bg-churchNavy text-churchGold font-bold py-3 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-md hover:bg-opacity-95"
-              >
-                <Send size="{16}"/> {submitting ? 'Submitting...' : 'Send Prayer Request'}
-              </button>
+              <button
+  type="submit"
+  className="w-full bg-churchNavy text-churchGold hover:bg-churchNavy/90 font-bold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+>
+  <Send size={18} />
+  <span>Send Prayer Request</span>
+</button>
             </form>
           </div>
 
