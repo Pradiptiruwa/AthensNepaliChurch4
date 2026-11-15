@@ -8,7 +8,18 @@ export default function Worship() {
       
       {/* Header */}
       <section className="relative bg-churchNavy text-white py-20 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=2000')` }}></div>
+        
+
+{/* Background Image using <img> tag so it never cuts */}
+<div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none flex items-center justify-center">
+  <img 
+    src="/worship.png" 
+    alt="Worship Background" 
+    className="w-full h-full object-contain object-center"
+
+  />
+</div>
+
         <div className="relative z-10 max-w-4xl mx-auto">
           <span className="inline-flex items-center gap-1.5 bg-churchGold/20 border border-churchGold/30 text-churchGold px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkles size={14} /> Weekly Gatherings
